@@ -1,0 +1,59 @@
+<head>
+</head>
+<header>
+    <script src="https://stage.metareal.com/playersdk/playersdk.min.1.0.js"></script>
+    <style>
+        .webapp {
+            width: calc(100%);
+            height: calc(100%);
+            margin-left: calc(0px);
+            margin-top: calc(0px);
+            background-color: black
+        }
+    </style>
+</header>
+<body>
+    <div class="webapp" id="myWebApp"></div>
+    <script lang="javascript">
+
+    // Create the player that will be embedded inside myWebApp
+    let player = MetarealPlayerSDK.create( "myWebApp" );
+    let tourURL = "https://tour-ap.metareal.com/apps/player?asset=ccfa0de3-bf66-46fe-b196-1c98b32de202";
+
+        // Load the tour
+        player.load( tourURL, () => {
+            console.log( "Tour is loaded" );
+            // Set the tour player into MODEL
+            player.setStartingViewMode( "MODEL" );
+            // Set the event listener for click on model
+            player.setEventListener( "modelviewclick", onModelViewClick );
+        } );
+        function onModelViewClick( event ) {
+            // Handle when clicking on a panorama
+            if ( event.type === "panorama" ) {
+                let clickedPanorama = player.tour.panoramas.find( ( item ) => {
+                    return item.id === event.id;
+                } );
+                if ( clickedPanorama ) {
+                    player.setViewMode( "TOUR" );
+                    player.moveToPanorama( clickedPanorama, "teleport" );
+                }
+            }
+            // Handle when clicking on a room
+            if ( event.type === "room" ) {
+                let clickedRoom = player.tour.rooms.find( ( item ) => {
+                    return item.id === event.id;
+                } );
+                if ( clickedRoom ) {
+                    player.setViewMode( "TOUR" );
+                    // teleport to the first panorama in this room
+                    player.moveToPanorama( clickedRoom.panoramas[ 0 ], "teleport" );
+                }
+            }
+        }
+    </script>
+</body>
+<footer>
+    
+</footer>
+</html>
